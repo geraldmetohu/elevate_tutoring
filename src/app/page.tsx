@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowRight, CheckCircle, Star, Phone, Mail, Calendar, GraduationCap, Sparkles } from "lucide-react";
+import { Menu, X, ArrowRight, CheckCircle, Phone, Mail, Calendar, GraduationCap, Sparkles } from "lucide-react";
 
 // Helper: Smooth scroll to id
 function useSmoothScroll() {
@@ -34,7 +34,38 @@ const NavLink: React.FC<{ to: string; onClick?: () => void; label: string }> = (
   );
 };
 
+
+
 export default function ElevateTutoringPage() {
+  // ✅ inside ElevateTutoringPage()
+const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
+
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  const formEl = e.currentTarget;
+  const data = {
+    name: (formEl.elements.namedItem("name") as HTMLInputElement)?.value,
+    email: (formEl.elements.namedItem("email") as HTMLInputElement)?.value,
+    board: (formEl.elements.namedItem("board") as HTMLSelectElement)?.value,
+    time: (formEl.elements.namedItem("time") as HTMLSelectElement)?.value,
+    message: (formEl.elements.namedItem("message") as HTMLTextAreaElement)?.value,
+  };
+
+  setStatus("loading");
+  try {
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Bad response");
+    setStatus("ok");
+    formEl.reset();
+  } catch {
+    setStatus("error");
+  }
+};
+
   const [open, setOpen] = useState(false);
   // Close on ESC + lock body scroll when menu is open
 useEffect(() => {
@@ -85,7 +116,7 @@ useEffect(() => {
         <GraduationCap className="h-6 w-6" />
       </div>
       <div className="leading-none">
-        <p className="text-lg font-bold tracking-tight">Elevate Tutoring</p>
+        <p className="text-lg font-bold tracking-tight">Elevate Tutor</p>
         <p className="text-xs text-slate-500">GCSE Maths (AQA · OCR · EDEXCEL)</p>
       </div>
     </div>
@@ -149,7 +180,7 @@ useEffect(() => {
 
       <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
         <a
-          href="tel:+447000000000"
+          href="tel:+447480454229"
           className="flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 hover:bg-slate-50"
         >
           <Phone className="h-4 w-4" /> Call
@@ -201,39 +232,75 @@ useEffect(() => {
       <section id="about" className="min-h-[120vh] bg-white">
         <div className="mx-auto max-w-7xl px-4 py-20 md:px-6">
           <div className="grid items-center gap-10 md:grid-cols-2">
-            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
               <h2 className="text-3xl font-extrabold md:text-4xl">Hi, I’m Rida 👋</h2>
+
               <p className="mt-4 text-slate-700">
-                I hold a degree in Biomedical Sciences from King’s College London and achieved an A* in GCSE Maths. Over years of studying, I learned which revision techniques truly move the needle—and I love sharing them with my students.
+                I hold a degree in Biomedical Sciences from King’s College London and achieved an A* in GCSE Maths.
+                My lessons are practical, calm, and focused on getting you exam-ready — without wasting time.
               </p>
-              <ul className="mt-6 space-y-3 text-slate-700">
-                {[
-                  "Personalised lessons mapped to AQA, OCR, or Edexcel",
-                  "Confidence‑building and smarter revision habits",
-                  "Clear explanations, past‑paper practice, and exam strategies",
-                ].map((t) => (
-                  <li key={t} className="flex items-start gap-3"><CheckCircle className="mt-0.5 h-5 w-5 text-indigo-600"/> <span>{t}</span></li>
-                ))}
-              </ul>
+
+              <div className="mt-6 space-y-4">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-sm font-semibold text-slate-800">How I teach</p>
+                  <ul className="mt-2 space-y-2 text-slate-700">
+                    <li className="flex items-start gap-3">
+                      <CheckCircle className="mt-0.5 h-5 w-5 text-indigo-600" />
+                      <span><strong>Review the syllabus</strong> (AQA / OCR / Edexcel), identify weak spots with a quick diagnostic.</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckCircle className="mt-0.5 h-5 w-5 text-indigo-600" />
+                      <span><strong>Targeted past-paper practice</strong> to build confidence exactly where it’s needed.</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckCircle className="mt-0.5 h-5 w-5 text-indigo-600" />
+                      <span><strong>Active recall + repetition</strong> — the fastest way to strengthen neural pathways and retain methods.</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckCircle className="mt-0.5 h-5 w-5 text-indigo-600" />
+                      <span><strong>Revision schedule</strong> you can follow outside tutoring hours, so momentum continues between lessons.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <ul className="space-y-3 text-slate-700">
+                  {[
+                    "Clear explanations with step-by-step worked solutions",
+                    "Exam technique and time management",
+                    "Regular check-ins so you (and parents) see progress",
+                  ].map((t) => (
+                    <li key={t} className="flex items-start gap-3">
+                      <CheckCircle className="mt-0.5 h-5 w-5 text-indigo-600" />
+                      <span>{t}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
               <div className="mt-8 flex gap-3">
-                <Btn onClick={() => scrollTo("consultation")}>Free 20‑min consultation</Btn>
-                <button onClick={() => scrollTo("pricing")} className="rounded-2xl border border-slate-200 px-5 py-3 font-semibold hover:bg-slate-50">See pricing</button>
+                <Btn onClick={() => scrollTo("consultation")}>Free 20-min consultation</Btn>
+                <button
+                  onClick={() => scrollTo("pricing")}
+                  className="rounded-2xl border border-slate-200 px-5 py-3 font-semibold hover:bg-slate-50"
+                >
+                  See pricing
+                </button>
               </div>
             </motion.div>
+
 
             <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="relative">
               <div className="aspect-[4/5] w-full overflow-hidden rounded-3xl shadow-2xl ring-1 ring-black/5">
                 <img
-                  src="https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=1600&auto=format&fit=crop"
+                  src="\20250421_174250.jpg"
                   alt="Tutor portrait"
                   className="h-full w-full object-cover"
                 />
-              </div>
-              <div className="absolute -bottom-6 -left-6 hidden rounded-2xl bg-white p-4 shadow-xl ring-1 ring-black/5 sm:block">
-                <div className="flex items-center gap-2 text-amber-500">
-                  {[...Array(5)].map((_,i)=> <Star key={i} className="h-4 w-4 fill-current" />)}
-                </div>
-                <p className="mt-1 text-sm font-semibold">Parent feedback: “Huge improvement!”</p>
               </div>
             </motion.div>
           </div>
@@ -331,59 +398,6 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* GALLERY */}
-      <section id="gallery" className="min-h-[120vh]">
-        <div className="mx-auto max-w-7xl px-4 py-20 md:px-6">
-          <div className="mx-auto max-w-3xl text-center">
-            <h3 className="text-3xl font-extrabold md:text-4xl">Learning in Pictures</h3>
-            <p className="mt-3 text-slate-700">A look at study setups, whiteboard moments, and the tools we use.</p>
-          </div>
-
-          <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-            {[
-              "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1600&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?q=80&w=1600&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1518085250887-2f903c200fee?q=80&w=1600&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=1600&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1513258496099-48168024aec0?q=80&w=1600&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1512758017271-d7b84c2113f1?q=80&w=1600&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1523246191931-3f2d8c2c5d79?q=80&w=1600&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1531545514256-b1400bc00f31?q=80&w=1600&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=1600&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1588072432836-e10032774350?q=80&w=1600&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1517976487492-576ea6b2936d?q=80&w=1600&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=1600&auto=format&fit=crop",
-            ].map((src, i) => (
-              <motion.div key={i} initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, delay: i * 0.03 }} viewport={{ once: true }} className="overflow-hidden rounded-2xl">
-                <img src={src} alt={`Gallery ${i+1}`} className="h-48 w-full object-cover md:h-56"/>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* TESTIMONIALS */}
-      <section className="min-h-[110vh] bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-20 md:px-6">
-          <div className="mx-auto max-w-3xl text-center">
-            <h3 className="text-3xl font-extrabold md:text-4xl">What students & parents say</h3>
-            <p className="mt-3 text-slate-700">Results improve when confidence grows.</p>
-          </div>
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {[
-              { q: "Rida helped my son jump two grades in 10 weeks.", a: "— Parent, Year 11" },
-              { q: "Explanations are so clear. Past papers feel easier now.", a: "— Student, AQA" },
-              { q: "The study plan changed how my daughter revises.", a: "— Parent, Edexcel" },
-            ].map((t, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: i * 0.1 }} viewport={{ once: true }} className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
-                <div className="mb-3 flex items-center gap-1 text-amber-500">{[...Array(5)].map((_,j)=>(<Star key={j} className="h-4 w-4 fill-current"/>))}</div>
-                <p className="font-medium">{t.q}</p>
-                <p className="mt-2 text-sm text-slate-600">{t.a}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* FAQ */}
       <section id="faq" className="min-h-[110vh]">
@@ -420,8 +434,8 @@ useEffect(() => {
               <p className="mt-3 text-slate-700">Ready to boost your GCSE Maths confidence? Request your free consultation or ask a question.</p>
 
               <div className="mt-6 grid gap-3">
-                <a href="tel:+440000000000" className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 hover:bg-slate-100"><Phone className="h-5 w-5 text-indigo-600"/> <span className="font-semibold">+44 0000 000000</span></a>
-                <a href="mailto:hello@elevatetutoring.co.uk" className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 hover:bg-slate-100"><Mail className="h-5 w-5 text-indigo-600"/> <span className="font-semibold">rida@gmail.com</span></a>
+                <a href="tel:+447480454229" className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 hover:bg-slate-100"><Phone className="h-5 w-5 text-indigo-600"/> <span className="font-semibold">+44 7480 454229</span></a>
+                <a href="mailto:info@elevatetutor.co.uk" className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 hover:bg-slate-100"><Mail className="h-5 w-5 text-indigo-600"/> <span className="font-semibold">info@elevatetutor.co.uk</span></a>
               </div>
 
               <div className="mt-10 rounded-3xl border border-slate-200 bg-slate-50 p-6">
@@ -435,20 +449,20 @@ useEffect(() => {
             </div>
 
             {/* Simple (non-functional) form scaffold */}
-            <form onSubmit={(e)=>{e.preventDefault(); alert('Thanks! I\'ll be in touch shortly.');}} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <form onSubmit={handleSubmit} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="grid gap-4">
                 <div>
                   <label className="text-sm font-medium">Your name</label>
-                  <input required className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none ring-indigo-600/30 focus:ring" placeholder="Jane Doe"/>
+                  <input name="name" required className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none ring-indigo-600/30 focus:ring" placeholder="Jane Doe"/>
                 </div>
                 <div>
                   <label className="text-sm font-medium">Email</label>
-                  <input type="email" required className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none ring-indigo-600/30 focus:ring" placeholder="jane@email.com"/>
+                  <input name="email" type="email" required className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none ring-indigo-600/30 focus:ring" placeholder="jane@email.com"/>
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <label className="text-sm font-medium">Exam board</label>
-                    <select className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none ring-indigo-600/30 focus:ring">
+                    <select name="board" className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none ring-indigo-600/30 focus:ring">
                       <option>AQA</option>
                       <option>OCR</option>
                       <option>Edexcel</option>
@@ -457,7 +471,7 @@ useEffect(() => {
                   </div>
                   <div>
                     <label className="text-sm font-medium">Preferred time</label>
-                    <select className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none ring-indigo-600/30 focus:ring">
+                    <select name="time" className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none ring-indigo-600/30 focus:ring">
                       <option>Weekday evening</option>
                       <option>Weekend morning</option>
                       <option>Weekend afternoon</option>
@@ -466,11 +480,22 @@ useEffect(() => {
                 </div>
                 <div>
                   <label className="text-sm font-medium">Message</label>
-                  <textarea rows={5} className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none ring-indigo-600/30 focus:ring" placeholder="Tell me about your goals…"/>
+                  <textarea name="message" rows={5} className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none ring-indigo-600/30 focus:ring" placeholder="Tell me about your goals…"/>
                 </div>
-                <Btn className="justify-center">Send request</Btn>
+
+                <Btn className="justify-center" disabled={status === "loading"}>
+                  {status === "loading" ? "Sending…" : "Send request"}
+                </Btn>
+
+                {status === "ok" && (
+                  <p className="text-sm font-semibold text-emerald-600">Thanks! I’ll be in touch shortly.</p>
+                )}
+                {status === "error" && (
+                  <p className="text-sm font-semibold text-rose-600">Something went wrong. Please try again or email me directly.</p>
+                )}
               </div>
             </form>
+
           </div>
         </div>
       </section>
@@ -487,7 +512,7 @@ useEffect(() => {
             <GraduationCap className="h-6 w-6" />
           </div>
           <div>
-            <p className="text-lg font-bold">Elevate Tutoring</p>
+            <p className="text-lg font-bold">Elevate Tutor</p>
             <p className="text-xs text-slate-500">GCSE Maths · AQA · OCR · Edexcel</p>
           </div>
         </div>
@@ -523,13 +548,13 @@ useEffect(() => {
       <div>
         <p className="text-sm font-semibold text-slate-800">Contact</p>
         <div className="mt-3 grid gap-2 text-sm text-slate-600">
-          <a href="tel:+447000000000" className="flex items-center gap-2 hover:underline">
+          <a href="tel:+447480454229" className="flex items-center gap-2 hover:underline">
             <Phone className="h-4 w-4 text-indigo-600" />
-            +44 7000 000000
+            +447480454229
           </a>
-          <a href="mailto:hello@elevatetutoring.co.uk" className="flex items-center gap-2 hover:underline">
+          <a href="mailto:info@elevatetutor.co.uk" className="flex items-center gap-2 hover:underline">
             <Mail className="h-4 w-4 text-indigo-600" />
-            hello@elevatetutoring.co.uk
+            info@elevatetutor.co.uk
           </a>
           <p className="text-xs text-slate-500">Mon–Sat · 09:00–19:00 (UK)</p>
         </div>
@@ -540,7 +565,7 @@ useEffect(() => {
     </div>
 
     <div className="mt-10 border-t border-slate-200 pt-6 text-center text-xs text-slate-500">
-      © {new Date().getFullYear()} Elevate Tutoring. All rights reserved.
+      © {new Date().getFullYear()} Elevate Tutor. All rights reserved.
     </div>
   </div>
 </footer>
