@@ -297,7 +297,7 @@ useEffect(() => {
             <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="relative">
               <div className="aspect-[4/5] w-full overflow-hidden rounded-3xl shadow-2xl ring-1 ring-black/5">
                 <img
-                  src="\20250421_174250.jpg"
+                  src="\rida.jpeg"
                   alt="Tutor portrait"
                   className="h-full w-full object-cover"
                 />
@@ -310,7 +310,7 @@ useEffect(() => {
       {/* CONSULTATION CTA */}
       <section id="consultation" className="relative min-h-[110vh]">
         <div className="absolute inset-0">
-          <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=2000&auto=format&fit=crop" alt="Notebook and laptop" className="h-full w-full object-cover"/>
+          <img src="https://images.unsplash.com/photo-1676302440263-c6b4cea29567?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Notebook and laptop" className="h-full w-full object-cover"/>
           <div className="absolute inset-0 bg-indigo-900/70" />
         </div>
         <div className="relative mx-auto flex min-h-[110vh] max-w-7xl items-center px-4 md:px-6">
